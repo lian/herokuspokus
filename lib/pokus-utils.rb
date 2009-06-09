@@ -1,7 +1,10 @@
 proc_env_info = proc { |env| # "env_info"
   if env["rack.request.query_hash"].respond_to? :keys
     # /i?p => return ip
-    return env["REMOTE_ADDR"] if env["rack.request.query_hash"].keys.include?("p")
+    if env["rack.request.query_hash"].keys.include?("p")
+      (ma = env["REMOTE_ADDR"].match(/^(.+?), /)) ? ma : env["REMOTE_ADDR"]
+    end
+
      # /i?ua => return user_agent
     return env["HTTP_USER_AGENT"] if env["rack.request.query_hash"].keys.include?("ua")
      # /i?la => return accept_language
