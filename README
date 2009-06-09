@@ -25,7 +25,7 @@ live in RAM or cloud-services-- rack-middleware fun!
 == code
 
 %w{json net/http uri}.each { |g| require g }
-def json_api(_params={},_url='http://localhost:3000/')
+def json_api(_params={},_url='http://oku.heroku.com')
   data = { :__json => _params.to_json }
   JSON.parse b=Net::HTTP.post_form(URI.parse(_url), data).body
 rescue JSON::ParserError => e
@@ -42,7 +42,7 @@ task = {
   :match => "^a.", :lines => [ "aab", "aba", "bab"]
 }
 
-puts json_api( task, "http://some-worker.heroku.com/" )
+puts json_api( task, "http://oku.heroku.com" )
 => [["aa"], ["ab"]]
 
 
