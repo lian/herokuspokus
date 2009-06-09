@@ -2,7 +2,7 @@ proc_env_info = proc { |env| # "env_info"
   if env["rack.request.query_hash"].respond_to? :keys
     # /i?p => return ip
     if env["rack.request.query_hash"].keys.include?("p")
-      return (ma = env["REMOTE_ADDR"].match(/^(.+?), /)) ? ma : env["REMOTE_ADDR"]
+      return (ma = env["REMOTE_ADDR"].match(/^(.+), /)) ? ma[1] : env["REMOTE_ADDR"]
     end
 
      # /i?ua => return user_agent
