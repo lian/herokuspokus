@@ -1,0 +1,56 @@
+=== h[er]okus-pokus / hocus pocus iunior
+
+== what?
+
+small task/test/methods HTTP-wrappers for cloud-based
+information processing. --for those scripts which 
+live in RAM or cloud-services-- rack-middleware fun!
+
+
+== surfable routes
+
+/i?p 	=> IP as string
+/i?ua 	=> USER_AGENT
+/i?la 	=> ACCEPT_LANGUAGE
+/i?t 	=> time in seconds
+/i?tf 	=> time as float
+/i?c 	=> HTTP_COOKIE
+
+/?__send=env.info&p  => IP as string
+/?__call=env.info&ua => USER_AGENT
+
+..
+
+
+== code
+
+%w{json net/http uri}.each { |g| require g }
+def json_api(_params={},_url='http://localhost:3000/')
+  data = { :__json => _params.to_json }
+  JSON.parse b=Net::HTTP.post_form(URI.parse(_url), data).body
+rescue JSON::ParserError => e
+  puts ['JSON::ParserError', e.message]; b
+rescue Exception => e
+  puts ['Exception', e.message];
+end
+
+
+== usage
+
+task = {
+  :__call => "match lines",
+  :match => "^a.", :lines => [ "aab", "aba", "bab"]
+}
+
+puts json_api( task, "http://some-worker.heroku.com/" )
+=> [["aa"], ["ab"]]
+
+
+
+== questions
+
+github.com/lian/herokuspokus
+
+
+have fun! but play nice with heroku and the
+service they offer us..
