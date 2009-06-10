@@ -84,7 +84,18 @@ rescue Exception => e
 end
 
 require "sinatra"
+require "lib/rack/contrib/autotun_rfc2397"
+require "lib/rack/contrib/bounce_favicon"
+
+use Rack::ContentLength
+use Rack::BounceFavicon
 use PokusMiddleware
+use Rack::AutoTunRFC2397, :files => [ "_icon.jpg", "pixel.gif" ] #, :force => true, :extern => true
+
+get "/" do
+  content_type "text/plain"
+  $index_page.gsub("pocus iunior","pocus iunior / #{$__main.object_id}:#{Time.now.to_f.to_s}")
+end
 
 get "/" do
   content_type "text/plain"
@@ -95,4 +106,25 @@ get "/i" do
   content_type "text/plain"
   res = Pokus.call( env.merge("pokus.method" => "env.info") )
   res.is_a?(String) ? res : res.to_yaml
+end
+
+
+get "/autotun_rfc2397" do
+  %{
+    <h1>Rack::AutoTunRFC2397</h1>
+    <h2>rack/contrib/autotun_rfc2397: "data" URL scheme - http://www.ietf.org/rfc/rfc2397.txt</h2>
+
+    <p>'auto'-replaces targeted files and inline them via src="data:[<mediatype>][;base64],<data>" </p>
+
+    <p>
+    use Rack::AutoTunRFC2397, :files => [ "header.jpg", "bg_toolbar.gif" ] <br />
+    use Rack::AutoTunRFC2397, :static_encoded => { "tiny_icon.jpg" => "ZmFrZV91bmVuY29kZ .." }
+    </p>
+
+    <div style="text-align:center">
+      <img src="openbsd_vistaincapable.png" /><br />
+      <img src="pixel.gif" /><br />
+      <img src="_icon.jpg" /><br />
+    </div>
+  }
 end
